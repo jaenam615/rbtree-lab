@@ -319,7 +319,7 @@ node_t *rbtree_transplant(rbtree *t, node_t *u, node_t *v)
     return t->root;
 }
 
-void *inorder(const rbtree *t, node_t *x, key_t *arr, int* idx, const size_t n)
+void inorder(const rbtree *t, node_t *x, key_t *arr, int* idx, const size_t n)
 {
     if (x == t->nil){
         return;
