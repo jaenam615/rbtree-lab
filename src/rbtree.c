@@ -8,6 +8,7 @@ node_t *rbtree_transplant(rbtree *t, node_t *u, node_t *v);
 node_t *left_rotate(rbtree *t, node_t *x);
 node_t *right_rotate(rbtree *t, node_t *x);
 
+
 rbtree *new_rbtree(void)
 {
     rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
@@ -318,11 +319,35 @@ node_t *rbtree_transplant(rbtree *t, node_t *u, node_t *v)
     return t->root;
 }
 
+void inorder(const rbtree *t, node_t *x, key_t *arr, int* idx, const size_t n)
+{
+    if (x == t->nil){
+        return;
+    }
+    inorder(t, x->left, arr, idx, n);
+    if( *idx < n){
+        arr[(*idx)++] = x->key;
+    }
+    else{
+        return;
+    }
+    inorder(t, x->right, arr, idx, n);
+
+}
+
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
 {
     // TODO: implement to_array
+    node_t* x = t->root;
+    if (x == t->nil)
+        return 0;
+    int cnt = 0;
+    int *idx = &cnt;
+    inorder(t, x, arr, idx, n);
     return 0;
 }
+
+
 
 node_t *left_rotate(rbtree *t, node_t *x)
 {                         // x 기준, 왼쪽으로 회전
