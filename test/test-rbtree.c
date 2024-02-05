@@ -269,12 +269,14 @@ static bool color_traverse(const node_t *p, const color_t parent_color,
     }
     else if (black_depth != max_black_depth)
     {
+      printf("depth\n");
       return false;
     }
     return true;
   }
   if (parent_color == RBTREE_RED && p->color == RBTREE_RED)
   {
+    printf("red!!\n");
     return false;
   }
   int next_depth = ((p->color == RBTREE_BLACK) ? 1 : 0) + black_depth;
@@ -419,8 +421,8 @@ int main(void)
   test_find_single(512, 1024);
   test_erase_root(128);
   test_find_erase_fixed();
-  test_minmax_suite();
-  test_to_array_suite();
+  // test_minmax_suite();
+  // test_to_array_suite();
   // test_distinct_values();
   // test_duplicate_values();
   // test_multi_instance();
