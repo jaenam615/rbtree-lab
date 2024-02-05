@@ -18,9 +18,21 @@ rbtree *new_rbtree(void)
     return p;
 }
 
+void postorder(node_t *p, rbtree *t)
+{
+    if (p != t->nil)
+    {
+        postorder(p->left, t);
+        postorder(p->right, t);
+        free(p);
+    }
+}
+
 void delete_rbtree(rbtree *t)
 {
     // TODO: reclaim the tree nodes's memory
+    node_t *x = t->root;
+    postorder(x, t);
     free(t);
 }
 
@@ -109,32 +121,32 @@ void rbtree_insert_fixup(rbtree *t, node_t *z)
 
 node_t *rbtree_find(const rbtree *t, const key_t key)
 {
-    node_t *x = t->root;
+    node_t *x = t->root; // 인수로 받은 트리 t의 root값을 x가 가리키게 함
 
-    while (x != t->nil)
+    while (x != t->nil) // x가 가리키는 것이 트리 t의 nil이 아닐 때
     {
-        if (x->key == key)
+        if (x->key == key) // x가 가리키는 것이 입력받은 key와 같으면
         {
-            break;
+            break; // 탈출(찾기 성공?)
         }
 
-        if (x->left == t->nil && x->right == t->nil)
+        if (x->left == t->nil && x->right == t->nil) // x가 가리키는 노드의 왼쪽 자식과 오른쪽 자식이 모두 nil이라면
         {
-            return NULL;
+            return NULL; // 아니라는 것을 반환 (탈출)
         }
 
-        if (x->key > key)
+        if (x->key > key) // x가 가리키는 노드의 키값이 입력받은 인수 key값보다 크다면
         {
-            x = x->left;
+            x = x->left; // 왼쪽 자식을 x로 갱신
         }
-        else
+        else // 반대의 경우
         {
-            x = x->right;
+            x = x->right; // 오른쪽 자식을 x로 갱신
         }
     }
 
     // TODO: implement find
-    return x;
+    return x; // x값 반환
 }
 
 node_t *rbtree_min(const rbtree *t)
