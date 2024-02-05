@@ -62,12 +62,12 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
 node_t *rbtree_min(const rbtree *t)
 {
   // TODO: implement find
-  node_t *x = t->root;
-  while (x->left != t->nil)
+  node_t *x = t->root;      // x가 인수로 들어온 RB tree t의 원소 'root'를 가리키게 함
+  while (x->left != t->nil) // x의 (t의 root의) 왼쪽이 nil이 아닐때
   {
-    x = x->left;
+    x = x->left; // x가 왼쪽을 가리키게 함(?)
   }
-  return x;
+  return x; // x를 반환
 }
 
 node_t *rbtree_max(const rbtree *t)
@@ -84,6 +84,7 @@ node_t *rbtree_max(const rbtree *t)
 int rbtree_erase(rbtree *t, node_t *p)
 {
   // TODO: implement erase
+
   return 0;
 }
 
