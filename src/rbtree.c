@@ -57,13 +57,18 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
 {
   node_t *x = t->root;
 
-  while (x != key)
+  while (x->key != key)
   {
-    if (x == key)
+    if (x->left == t->nil && x->right == t->nil)
+    {
+      return NULL;
+    }
+
+    if (x->key == key)
     {
       break;
     }
-    else if (key > x)
+    else if (x->key > x)
     {
       x = x->right;
     }
