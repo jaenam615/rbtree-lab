@@ -225,7 +225,6 @@ int rbtree_erase(rbtree *t, node_t *p)
         y->left = p->left;
         y->left->parent = y;
         y->color = p->color;
-		y->key = p->key;
 		free(p);
     }
     if (y_ori_color == RBTREE_BLACK)
