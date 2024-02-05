@@ -123,6 +123,11 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
 {
     node_t *x = t->root; // 인수로 받은 트리 t의 root값을 x가 가리키게 함
 
+    if (t->root == t->nil)
+    {
+        return NULL;
+    }
+
     while (x != t->nil) // x가 가리키는 것이 트리 t의 nil이 아닐 때
     {
         if (x->key == key) // x가 가리키는 것이 입력받은 key와 같으면
@@ -171,24 +176,26 @@ node_t *rbtree_max(const rbtree *t)
     return x;
 }
 
-node_t *subtree_max(const rbtree *t, node_t *left){ // 왼쪽 서브트리에서 max
-	node_t *x = NULL;
-	x = left;
-	while (x->right != t->nil)
-	{
-		x = x->right;
-	}
-	return x;
+node_t *subtree_max(const rbtree *t, node_t *left)
+{ // 왼쪽 서브트리에서 max
+    node_t *x = NULL;
+    x = left;
+    while (x->right != t->nil)
+    {
+        x = x->right;
+    }
+    return x;
 }
 
-node_t *subtree_min(const rbtree *t, node_t *right){ // 오른쪽 서브트리에서 min
-	node_t *x = NULL;
-	x = right;
-	while (x->left != t->nil)
-	{
-		x = x->left;
-	}
-	return x;
+node_t *subtree_min(const rbtree *t, node_t *right)
+{ // 오른쪽 서브트리에서 min
+    node_t *x = NULL;
+    x = right;
+    while (x->left != t->nil)
+    {
+        x = x->left;
+    }
+    return x;
 }
 
 int rbtree_erase(rbtree *t, node_t *p)
@@ -219,13 +226,13 @@ int rbtree_erase(rbtree *t, node_t *p)
         {
             rbtree_transplant(t, y, y->right);
             y->right = p->right;
-			y->right->parent = y;
+            y->right->parent = y;
         }
         rbtree_transplant(t, p, y);
         y->left = p->left;
         y->left->parent = y;
         y->color = p->color;
-		free(p);
+        free(p);
     }
     if (y_ori_color == RBTREE_BLACK)
         rbtree_erase_fixup(t, x);
@@ -235,7 +242,7 @@ int rbtree_erase(rbtree *t, node_t *p)
 
 void rbtree_erase_fixup(rbtree *t, node_t *x)
 {
-    node_t *w = NULL; 
+    node_t *w = NULL;
     while (x != t->root && x->color == RBTREE_BLACK)
     {
         if (x == x->parent->left)
@@ -259,12 +266,12 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
                 w->color = RBTREE_RED;
                 right_rotate(t, w);
                 w = x->parent->right;
-			}
-			w->color = x->parent->color;
-			x->parent->color = RBTREE_BLACK;
-			w->right->color = RBTREE_BLACK;
-			left_rotate(t, x->parent);
-			x = t->root;
+            }
+            w->color = x->parent->color;
+            x->parent->color = RBTREE_BLACK;
+            w->right->color = RBTREE_BLACK;
+            left_rotate(t, x->parent);
+            x = t->root;
         }
         else
         {
@@ -287,12 +294,12 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
                 w->color = RBTREE_RED;
                 left_rotate(t, w);
                 w = x->parent->left;
-			}
-			w->color = x->parent->color;
-			x->parent->color = RBTREE_BLACK;
-			w->left->color = RBTREE_BLACK;
-			right_rotate(t, x->parent);
-			x = t->root;
+            }
+            w->color = x->parent->color;
+            x->parent->color = RBTREE_BLACK;
+            w->left->color = RBTREE_BLACK;
+            right_rotate(t, x->parent);
+            x = t->root;
         }
     }
     x->color = RBTREE_BLACK;
