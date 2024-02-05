@@ -2,28 +2,32 @@
 
 #include <stdlib.h>
 
-rbtree *new_rbtree(void) {
+rbtree *new_rbtree(void)
+{
   rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
   // TODO: initialize struct if needed
   p->root = NULL;
-  p->nil = NULL;
+  p->nil->color = RBTREE_BLACK;
 
   return p;
 }
 
-void delete_rbtree(rbtree *t) {
+void delete_rbtree(rbtree *t)
+{
   // TODO: reclaim the tree nodes's memory
   free(t);
 }
 
-node_t *rbtree_insert(rbtree *t, const key_t key) {
+node_t *rbtree_insert(rbtree *t, const key_t key)
+{
   // TODO: implement insert
-  node_t *new = (node_t*)malloc(sizeof(node_t));
-  node_t* y = t->nil;
-  node_t* x = t->root;
+  node_t *new = (node_t *)malloc(sizeof(node_t));
+  node_t *y = t->nil;
+  node_t *x = t->root;
   new->key = key;
 
-  while (x != t->nil){ // x가 nil을 가리킬때까지 이진 탐색을 반복
+  while (x != t->nil)
+  { // x가 nil을 가리킬때까지 이진 탐색을 반복
     y = x;
     if (key < x->key)
       x = x->left;
@@ -49,55 +53,73 @@ node_t *rbtree_insert(rbtree *t, const key_t key) {
   return t->root;
 }
 
-node_t *rbtree_find(const rbtree *t, const key_t key) {
+node_t *rbtree_find(const rbtree *t, const key_t key)
+{
   // TODO: implement find
   return t->root;
 }
 
-node_t *rbtree_min(const rbtree *t) {
+node_t *rbtree_min(const rbtree *t)
+{
   // TODO: implement find
-  return t->root;
+  node_t *x = t->root;
+  while (x->left != t->nil)
+  {
+    x = x->left;
+  }
+  return x;
 }
 
-node_t *rbtree_max(const rbtree *t) {
+node_t *rbtree_max(const rbtree *t)
+{
   // TODO: implement find
-  return t->root;
+  node_t *x = t->root;
+  while (x->right != t->nil)
+  {
+    x = x->right;
+  }
+  return x;
 }
 
-int rbtree_erase(rbtree *t, node_t *p) {
+int rbtree_erase(rbtree *t, node_t *p)
+{
   // TODO: implement erase
   return 0;
 }
 
-int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n) {
+int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
+{
   // TODO: implement to_array
   return 0;
 }
 
-node_t *left_rotate(rbtree *t, node_t* x){ // x 기준, 왼쪽으로 회전
-  node_t* y = x->right;    // y 설정
-  x->right = y->left;      // y의 왼쪽 서브트리를 x의 오른쪽으로 옮겨줌
+node_t *left_rotate(rbtree *t, node_t *x)
+{                       // x 기준, 왼쪽으로 회전
+  node_t *y = x->right; // y 설정
+  x->right = y->left;   // y의 왼쪽 서브트리를 x의 오른쪽으로 옮겨줌
 
-  if (y->left != t->nil) { // 왼쪽 서브트리가 nil이 아니면
-    y->left->parent = x;   // 왼쪽 서브트리의 부모를 x로 설정
+  if (y->left != t->nil)
+  {                      // 왼쪽 서브트리가 nil이 아니면
+    y->left->parent = x; // 왼쪽 서브트리의 부모를 x로 설정
   }
 
   y->parent = x->parent;   // y의 부모를 x의 부모로 설정
   if (x->parent == t->nil) // 만약 x가 root였으면
     t->root = y;           // y를 root로 설정
-  else if (x == x->parent->left) 
-    x->parent->left = y;   // x가 부모의 왼쪽 자식이면 y를 연결해줌
-  else 
-    x->parent->right = y;  // x가 부모의 오른쪽 자식이면 y를 연결해줌
+  else if (x == x->parent->left)
+    x->parent->left = y; // x가 부모의 왼쪽 자식이면 y를 연결해줌
+  else
+    x->parent->right = y; // x가 부모의 오른쪽 자식이면 y를 연결해줌
 
-  y->left = x;    // y의 왼쪽 자식을 x로 설정
-  x->parent = y;  // x의 부모를 y로 설정
+  y->left = x;   // y의 왼쪽 자식을 x로 설정
+  x->parent = y; // x의 부모를 y로 설정
 
-  return t->root; 
+  return t->root;
 }
 
-node_t *right_rotate(rbtree* t, node_t* x){ // x 기준, 오른쪽으로 회전
-  node_t* y = x->left;
+node_t *right_rotate(rbtree *t, node_t *x)
+{ // x 기준, 오른쪽으로 회전
+  node_t *y = x->left;
   x->left = y->right;
 
   if (y->right != t->nil)
