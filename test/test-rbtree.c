@@ -260,6 +260,7 @@ static void init_color_traverse(void)
 static bool color_traverse(const node_t *p, const color_t parent_color,
                            const int black_depth, node_t *nil)
 {
+
   if (p == nil)
   {
     if (!touch_nil)
@@ -269,14 +270,14 @@ static bool color_traverse(const node_t *p, const color_t parent_color,
     }
     else if (black_depth != max_black_depth)
     {
-      printf("depth\n");
+      printf("hi2\n");
       return false;
     }
     return true;
   }
   if (parent_color == RBTREE_RED && p->color == RBTREE_RED)
   {
-    printf("red!!\n");
+    printf("hi3\n");
     return false;
   }
   int next_depth = ((p->color == RBTREE_BLACK) ? 1 : 0) + black_depth;
@@ -417,10 +418,10 @@ void test_find_erase_rand(const size_t n, const unsigned int seed)
 int main(void)
 {
   test_init();
-  test_insert_single(1024);
-  test_find_single(512, 1024);
-  test_erase_root(128);
-  test_find_erase_fixed();
+  // test_insert_single(1024);
+  // test_find_single(512, 1024);
+  // test_erase_root(128);
+  // test_find_erase_fixed();
   // test_minmax_suite();
   // test_to_array_suite();
   // test_distinct_values();

@@ -8,7 +8,6 @@ node_t *rbtree_transplant(rbtree *t, node_t *u, node_t *v);
 node_t *left_rotate(rbtree *t, node_t *x);
 node_t *right_rotate(rbtree *t, node_t *x);
 
-
 rbtree *new_rbtree(void)
 {
     rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
@@ -75,9 +74,10 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
 void rbtree_insert_fixup(rbtree *t, node_t *z)
 {
     node_t *y = NULL;
+
     while (z->parent->color == RBTREE_RED)
     {
-        if (z->parent == z->parent->parent->left)
+        if (z->parent == z->parent->parent->left) // 내 부모 노드가 할아버지 노드의 왼쪽 자식일때
         {
             y = z->parent->parent->right;
             if (y->color == RBTREE_RED)
@@ -86,14 +86,15 @@ void rbtree_insert_fixup(rbtree *t, node_t *z)
                 y->color = RBTREE_BLACK;
                 z->parent->parent->color = RBTREE_RED;
                 z = z->parent->parent;
-				continue;
+                continue;
             }
-            else if (z == z->parent->right)
+
+            if (z == z->parent->right)
             {
                 z = z->parent;
                 left_rotate(t, z); // p.319 경우(1,2,3) 그림 참고
             }
-			z->parent->color = RBTREE_BLACK;
+            z->parent->color = RBTREE_BLACK;
             z->parent->parent->color = RBTREE_RED;
             right_rotate(t, z->parent->parent);
         }
@@ -106,19 +107,20 @@ void rbtree_insert_fixup(rbtree *t, node_t *z)
                 y->color = RBTREE_BLACK;
                 z->parent->parent->color = RBTREE_RED;
                 z = z->parent->parent;
-				continue;
+                continue;
             }
-            else if (z == z->parent->left)
+            if (z->color == z->parent->left->color)
             {
                 z = z->parent;
                 right_rotate(t, z);
             }
-			z->parent->color = RBTREE_BLACK;
+            z->parent->color = RBTREE_BLACK;
             z->parent->parent->color = RBTREE_RED;
             left_rotate(t, z->parent->parent);
         }
     }
-	t->root->color = RBTREE_BLACK;
+
+    t->root->color = RBTREE_BLACK;
 }
 
 node_t *rbtree_find(const rbtree *t, const key_t key)
@@ -327,26 +329,28 @@ node_t *rbtree_transplant(rbtree *t, node_t *u, node_t *v)
     return t->root;
 }
 
-void inorder(const rbtree *t, node_t *x, key_t *arr, int* idx, const size_t n)
+void inorder(const rbtree *t, node_t *x, key_t *arr, int *idx, const size_t n)
 {
-    if (x == t->nil){
+    if (x == t->nil)
+    {
         return;
     }
     inorder(t, x->left, arr, idx, n);
-    if( *idx < n){
+    if (*idx < n)
+    {
         arr[(*idx)++] = x->key;
     }
-    else{
+    else
+    {
         return;
     }
     inorder(t, x->right, arr, idx, n);
-
 }
 
 int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
 {
     // TODO: implement to_array
-    node_t* x = t->root;
+    node_t *x = t->root;
     if (x == t->nil)
         return 0;
     int cnt = 0;
@@ -354,8 +358,6 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
     inorder(t, x, arr, idx, n);
     return 0;
 }
-
-
 
 node_t *left_rotate(rbtree *t, node_t *x)
 {                         // x 기준, 왼쪽으로 회전
