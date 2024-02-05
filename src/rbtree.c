@@ -183,7 +183,7 @@ node_t *rbtree_max(const rbtree *t)
 }
 
 node_t *subtree_max(const rbtree *t, node_t *left) // 왼쪽 서브트리에서 max
-{ 
+{
     node_t *x = NULL;
     x = left;
     while (x->right != t->nil)
@@ -194,7 +194,7 @@ node_t *subtree_max(const rbtree *t, node_t *left) // 왼쪽 서브트리에서 
 }
 
 node_t *subtree_min(const rbtree *t, node_t *right) // 오른쪽 서브트리에서 min
-{ 
+{
     node_t *x = NULL;
     x = right;
     while (x->left != t->nil)
@@ -268,7 +268,6 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
                 x = x->parent;
                 continue;
             }
-<<<<<<< HEAD
             else if (w->right->color == RBTREE_BLACK)
             {
                 w->left->color = RBTREE_BLACK;
@@ -282,22 +281,6 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
             w->right->color = RBTREE_BLACK;
             left_rotate(t, x->parent);
             x = t->root;
-=======
-            else {
-				if (w->right->color == RBTREE_BLACK)
-				{
-					w->left->color = RBTREE_BLACK;
-					w->color = RBTREE_RED;
-					right_rotate(t, w);
-					w = x->parent->right;
-				}
-				w->color = x->parent->color;
-				x->parent->color = RBTREE_BLACK;
-				w->right->color = RBTREE_BLACK;
-				left_rotate(t, x->parent);
-				x = t->root;
-			}
->>>>>>> 4c6e673a8592e1887bd1523aaa413f9cc7e57652
         }
         else
         {
@@ -316,7 +299,6 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
                 x = x->parent;
                 continue;
             }
-<<<<<<< HEAD
             else if (w->left->color == RBTREE_BLACK)
             {
                 w->right->color = RBTREE_BLACK;
@@ -329,33 +311,14 @@ void rbtree_erase_fixup(rbtree *t, node_t *x)
             w->left->color = RBTREE_BLACK;
             right_rotate(t, x->parent);
             x = t->root;
-=======
-            else {
-				if (w->left->color == RBTREE_BLACK)
-				{
-					w->right->color = RBTREE_BLACK;
-					w->color = RBTREE_RED;
-					left_rotate(t, w);
-					w = x->parent->left;
-				}
-				w->color = x->parent->color;
-				x->parent->color = RBTREE_BLACK;
-				w->left->color = RBTREE_BLACK;
-				right_rotate(t, x->parent);
-				x = t->root;
-			}
->>>>>>> 4c6e673a8592e1887bd1523aaa413f9cc7e57652
         }
     }
     x->color = RBTREE_BLACK;
-<<<<<<< HEAD
     // t->root->color = RBTREE_BLACK;
-=======
->>>>>>> 4c6e673a8592e1887bd1523aaa413f9cc7e57652
 }
 
 node_t *rbtree_transplant(rbtree *t, node_t *u, node_t *v) // u와 v의 부모를 바꿈
-{ 
+{
     if (u->parent == t->nil)
         t->root = v;
     else if (u == u->parent->left)
@@ -397,7 +360,7 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
 }
 
 node_t *left_rotate(rbtree *t, node_t *x) // x 기준, 왼쪽으로 회전
-{                         
+{
     node_t *y = x->right; // y 설정
     x->right = y->left;   // y의 왼쪽 서브트리를 x의 오른쪽으로 옮겨줌
 
@@ -421,7 +384,7 @@ node_t *left_rotate(rbtree *t, node_t *x) // x 기준, 왼쪽으로 회전
 }
 
 node_t *right_rotate(rbtree *t, node_t *x) // x 기준, 오른쪽으로 회전
-{ 
+{
     node_t *y = x->left;
     x->left = y->right;
 
