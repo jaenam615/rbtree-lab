@@ -57,24 +57,25 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
 {
   node_t *x = t->root;
 
-  while (x->key != key)
+  while (x != t->nil)
   {
+    if (x->key == key)
+    {
+      break;
+    }
+
     if (x->left == t->nil && x->right == t->nil)
     {
       return NULL;
     }
 
-    if (x->key == key)
+    if (x->key > key)
     {
-      break;
-    }
-    else if (x->key > x)
-    {
-      x = x->right;
+      x = x->left;
     }
     else
     {
-      x = x->left;
+      x = x->right;
     }
   }
 
@@ -86,7 +87,7 @@ node_t *rbtree_min(const rbtree *t)
 {
   // TODO: implement find
   node_t *x = t->root;      // x가 인수로 들어온 RB tree t의 원소 'root'를 가리키게 함
-  while (x->left != t->nil) // x의 (t의 root의) 왼쪽이 nil이 아닐때
+  while (x->left != t->nil) // x의 (= t의 root의) 왼쪽이 nil이 아닐때
   {
     x = x->left; // x가 왼쪽을 가리키게 함(?)
   }
