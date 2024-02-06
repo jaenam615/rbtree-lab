@@ -8,15 +8,15 @@ node_t *rbtree_transplant(rbtree *t, node_t *u, node_t *v);
 node_t *left_rotate(rbtree *t, node_t *x);
 node_t *right_rotate(rbtree *t, node_t *x);
 
-rbtree *new_rbtree(void)
+rbtree *new_rbtree(void) // 새로운 rbtree 생성
 {
-    rbtree *p = (rbtree *)calloc(1, sizeof(rbtree));
-    node_t *nil = (node_t *)malloc(sizeof(node_t));
-    p->root = nil;
-    p->nil = nil;
-    p->nil->color = RBTREE_BLACK;
+    rbtree *p = (rbtree *)calloc(1, sizeof(rbtree)); // rbtree 구조체 메모리 할당
+    node_t *nil = (node_t *)malloc(sizeof(node_t));  //  nil 노드 메모리 할당
+    p->root = nil;                                   // 트리 p의 root를 nil로 설정
+    p->nil = nil;                                    // 트리 p의 nil을 nil로 설정
+    p->nil->color = RBTREE_BLACK;                    // nil의 색깔을 검정으로 설정
 
-    return p;
+    return p; // p 반환
 }
 
 void postorder(node_t *p, rbtree *t)
@@ -43,60 +43,66 @@ void delete_rbtree(rbtree *t)
 
 node_t *rbtree_insert(rbtree *t, const key_t key)
 {
-    node_t *new = (node_t *)malloc(sizeof(node_t));
+    node_t *z = (node_t *)malloc(sizeof(node_t));
     node_t *y = t->nil;
     node_t *x = t->root;
-    new->key = key;
 
-    while (x != t->nil)
-    { // x가 nil을 가리킬때까지 이진 탐색을 반복
+    z->key = key;
+
+    while (x != t->nil) // 넣어지는 값(노드)의 위치 찾기(?)
+    {
         y = x;
-        if (key < x->key)
+        if (z->key < x->key)
+        {
             x = x->left;
+        }
         else
+        {
             x = x->right;
+        }
     }
-    // while이 끝났을 때는 x는 nil을, y는 그 부모를 가리킴
-
-    new->parent = y;
-    if (y == t->nil) // 반복이 끝났는데 y가 nil을 가리키면 트리가 비었다는 뜻
-        t->root = new;
-    else if (key < y->key)
-        y->left = new;
+    z->parent = y;   // z의 부모를 y로 설정
+    if (y == t->nil) // 만약 y 가 닐을 가리키면, 즉 트리가 비어있다면
+    {
+        t->root = z; // 트리의 루트에 z를 넣어라
+    }
+    else if (z->key < y->key)
+    {                // z의 값이 부모의 키값보다 적으면
+        y->left = z; // y의 왼쪽에 z를 넣어라
+    }
     else
-        y->right = new;
+    {
+        y->right = z; // 아닐 경우(부모와 같거나 크면) y의 오른쪽에 넣어라
+    }
+    z->left = t->nil; // z의 왼쪽과 오른쪽을 nil로
+    z->right = t->nil;
+    z->color = RBTREE_RED;
+    rbtree_insert_fixup(t, z);
 
-    new->left = t->nil;
-    new->right = t->nil;
-    new->color = RBTREE_RED;
-
-    rbtree_insert_fixup(t, new); // 새로운 삽입으로 규칙 위반일 수 있으니 확인
-
-    return t->root; // root가 바뀌었을 수 있으니 루트 반환
+    return t->root;
 }
 
 void rbtree_insert_fixup(rbtree *t, node_t *z)
 {
-    node_t *y = NULL;
+    node_t *y = NULL; // node y 초기화
 
-    while (z->parent->color == RBTREE_RED)
+    while (z->parent->color == RBTREE_RED) //(본 함수 진입 전 삽입 된) node z의 부모가 빨간색일때 -> red conflict
     {
-        if (z->parent == z->parent->parent->left) // 내 부모 노드가 할아버지 노드의 왼쪽 자식일때
+        if (z->parent == z->parent->parent->left) // z의 부모가 할아버지의 왼쪽 자손일 때
         {
-            y = z->parent->parent->right;
+            y = z->parent->parent->right; // 노드 y(temp)에 z의 삼촌 저장
             if (y->color == RBTREE_RED)
-            {
-                z->parent->color = RBTREE_BLACK;
-                y->color = RBTREE_BLACK;
-                z->parent->parent->color = RBTREE_RED;
-                z = z->parent->parent;
+            {                                          // 삼촌도 빨간색이면 -> RECOLORING
+                z->parent->color = RBTREE_BLACK;       // 부모를 검정색으로 만듬
+                y->color = RBTREE_BLACK;               // 삼촌도 검정색으로 만듬
+                z->parent->parent->color = RBTREE_RED; // 할아버지는 빨강색으로 만듬
+                z = z->parent->parent;                 // 할아버지도 검사해야 하기 떄문에, while문에 할아버지 검사하기 위해 z가 할아버지를 가리키게 하고 다시 while조건 확인
                 continue;
             }
-
-            if (z == z->parent->right)
+            if (z == z->parent->right) // 아버지는 왼쪽 자식이지만, 나는 오른쪽 자식일 때, 일자를 만들어야 하기 때문에
             {
                 z = z->parent;
-                left_rotate(t, z); // p.319 경우(1,2,3) 그림 참고
+                left_rotate(t, z);
             }
             z->parent->color = RBTREE_BLACK;
             z->parent->parent->color = RBTREE_RED;
@@ -113,7 +119,8 @@ void rbtree_insert_fixup(rbtree *t, node_t *z)
                 z = z->parent->parent;
                 continue;
             }
-            if (z->color == z->parent->left->color)
+
+            if (z == z->parent->left)
             {
                 z = z->parent;
                 right_rotate(t, z);
@@ -123,7 +130,6 @@ void rbtree_insert_fixup(rbtree *t, node_t *z)
             left_rotate(t, z->parent->parent);
         }
     }
-
     t->root->color = RBTREE_BLACK;
 }
 
@@ -238,8 +244,8 @@ int rbtree_erase(rbtree *t, node_t *p)
         y->left = p->left;
         y->left->parent = y;
         y->color = p->color;
-        free(p);
     }
+    free(p);
     if (y_ori_color == RBTREE_BLACK)
         rbtree_erase_fixup(t, x);
 
@@ -339,7 +345,8 @@ void inorder(const rbtree *t, node_t *x, key_t *arr, int *idx, const size_t n)
     inorder(t, x->left, arr, idx, n);
     if (*idx < n)
     {
-        arr[(*idx)++] = x->key;
+        arr[(*idx)] = x->key;
+        (*idx)++;
     }
     else
     {
@@ -361,24 +368,27 @@ int rbtree_to_array(const rbtree *t, key_t *arr, const size_t n)
 
 node_t *left_rotate(rbtree *t, node_t *x) // x 기준, 왼쪽으로 회전
 {
-    node_t *y = x->right; // y 설정
-    x->right = y->left;   // y의 왼쪽 서브트리를 x의 오른쪽으로 옮겨줌
-
+    node_t *y = x->right;
+    x->right = y->left;
     if (y->left != t->nil)
-    {                        // 왼쪽 서브트리가 nil이 아니면
-        y->left->parent = x; // 왼쪽 서브트리의 부모를 x로 설정
+    {
+        y->left->parent = x;
     }
-
-    y->parent = x->parent;   // y의 부모를 x의 부모로 설정
-    if (x->parent == t->nil) // 만약 x가 root였으면
-        t->root = y;         // y를 root로 설정
+    y->parent = x->parent;
+    if (x->parent == t->nil)
+    {
+        t->root = y;
+    }
     else if (x == x->parent->left)
-        x->parent->left = y; // x가 부모의 왼쪽 자식이면 y를 연결해줌
+    {
+        x->parent->left = y;
+    }
     else
-        x->parent->right = y; // x가 부모의 오른쪽 자식이면 y를 연결해줌
-
-    y->left = x;   // y의 왼쪽 자식을 x로 설정
-    x->parent = y; // x의 부모를 y로 설정
+    {
+        x->parent->right = y;
+    }
+    y->left = x;
+    x->parent = y;
 
     return t->root;
 }
