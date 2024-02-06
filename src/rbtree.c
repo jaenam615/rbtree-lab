@@ -108,10 +108,10 @@ void rbtree_insert_fixup(rbtree *t, node_t *z)
             z->parent->parent->color = RBTREE_RED;
             right_rotate(t, z->parent->parent);
         }
-        else
+        else // z의 부모가 할아버지의 오른쪽 자손일때
         {
             y = z->parent->parent->left;
-            if (y->color == RBTREE_RED)
+            if (y->color == RBTREE_RED) // 삼촌도 빨간색일때
             {
                 z->parent->color = RBTREE_BLACK;
                 y->color = RBTREE_BLACK;
